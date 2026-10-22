@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Curse of Scully</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Curse of Scully is a free pirate strategy game for Android. Build a pirate haven, raise a fleet and sail a living ocean.">
+<meta property="og:title" content="Curse of Scully">
+<meta property="og:description" content="Build a pirate haven, raise a fleet and sail a living ocean. Free on Google Play.">
+<meta property="og:image" content="https://kraabat.github.io/curse-of-scully/assets/og-banner.jpg">
+<meta property="og:url" content="https://kraabat.github.io/curse-of-scully/">
+<link rel="canonical" href="https://kraabat.github.io/curse-of-scully/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap">
+<style>
+/* Layout: a dusk harbour opens the page, then the voyage reads top to bottom:
+   haven, ocean, kraken, fleet, screens, captain's log, follow, download.
+   One committed night-at-sea look (single theme by choice). */
+:root{
+  --ink:#0a1417;          /* night sea, page ground */
+  --deep:#10211f;         /* raised surfaces */
+  --tide:#1d3b38;         /* borders, quiet fills */
+  --parch:#efe2bf;        /* body text, parchment */
+  --parch-dim:#b9ad8e;    /* secondary text */
+  --gold:#e0ad4a;         /* brass and gold leaf, the one accent */
+  --gold-hi:#f6cf7a;
+  --ember:#e2672f;        /* lantern flame, used sparingly */
+  --paper-ink:#3a2412;    /* ink on parchment */
+  --f-display:"Pirata One","Germania One",Georgia,serif;
+  --f-body:"Alegreya Sans","Segoe UI",system-ui,sans-serif;
+  --gutter:max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r:max(16px, env(safe-area-inset-right, 0px));
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+main{overflow-x:clip}
+body{margin:0;background:var(--ink);color:var(--parch);font-family:var(--f-body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:var(--gold-hi)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;line-height:1.02;margin:0;text-wrap:balance;letter-spacing:.01em}
+p{margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(clamp(16px,4vw,40px), env(safe-area-inset-left,0px));padding-right:max(clamp(16px,4vw,40px), env(safe-area-inset-right,0px))}
+.eyebrow{font-size:.8rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.sec{padding-block:clamp(64px,9vw,120px)}
+.sec-head{display:grid;gap:14px;max-width:640px;margin-bottom:clamp(32px,5vw,56px)}
+.sec-head h2{font-size:clamp(2.4rem,5.5vw,4rem);color:var(--gold-hi)}
+.sec-head p{color:var(--parch-dim);font-size:1.1rem}
+
+/* header */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--ink)}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:color-mix(in srgb,var(--ink) 82%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid color-mix(in srgb,var(--gold) 18%,transparent)}
+.top .wrap{display:flex;align-items:center;gap:20px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--parch);font-family:var(--f-display);font-size:1.5rem;white-space:nowrap}
+.brand img{width:36px;height:36px;border-radius:9px;border:1px solid color-mix(in srgb,var(--gold) 50%,transparent)}
+.nav{display:flex;gap:22px;margin-left:auto}
+.nav a{color:var(--parch-dim);text-decoration:none;font-weight:500;font-size:.98rem}
+.nav a:hover{color:var(--gold-hi)}
+.top .btn-play{padding:8px 14px 8px 12px}
+.top .btn-play small{display:none}
+@media (max-width:1100px){.nav{display:none}.top .btn-play{margin-left:auto}}
+@media (max-width:400px){.brand span{display:none}}
+
+/* buttons */
+.btn-play{display:inline-flex;align-items:center;gap:12px;background:#000;color:#fff;text-decoration:none;border:1px solid #6f6f6f;border-radius:12px;padding:10px 20px 10px 16px;font-family:var(--f-body);line-height:1.1;transition:transform .15s ease, border-color .15s ease}
+.btn-play:hover{transform:translateY(-2px);border-color:var(--gold-hi)}
+.btn-play svg{width:28px;height:28px;flex:none}
+.btn-play small{display:block;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;opacity:.85}
+.btn-play b{display:block;font-size:1.25rem;font-weight:500}
+.btn-soon{display:inline-flex;align-items:center;gap:12px;border:1px dashed color-mix(in srgb,var(--parch) 40%,transparent);color:var(--parch-dim);border-radius:12px;padding:10px 18px 10px 16px;line-height:1.1}
+.btn-soon svg{width:26px;height:26px;flex:none}
+.btn-soon small{display:block;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase}
+.btn-soon b{display:block;font-size:1.1rem;font-weight:500;color:var(--parch)}
+.pill{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);background:var(--gold);border-radius:999px;padding:3px 10px;vertical-align:middle}
+
+/* hero */
+.hero{position:relative;isolation:isolate;overflow:hidden;min-height:min(860px,92svh);display:flex;align-items:center}
+.hero-bg{position:absolute;inset:0;z-index:-2}
+.hero-bg img{width:100%;height:100%;object-fit:cover;object-position:60% 35%}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:
+  linear-gradient(90deg,rgba(10,20,23,.92) 0%,rgba(10,20,23,.7) 38%,rgba(10,20,23,.15) 70%,rgba(10,20,23,.35) 100%),
+  linear-gradient(180deg,rgba(10,20,23,0) 55%,var(--ink) 98%)}
+.hero .wrap{width:100%;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:40px;align-items:center;padding-block:72px 96px}
+.hero-copy{display:grid;gap:22px;max-width:600px}
+.hero h1{font-size:clamp(4rem,11vw,8.6rem);color:var(--gold-hi);text-shadow:0 2px 0 #5b3a10,0 6px 30px rgba(0,0,0,.6);line-height:.9}
+.hero h1 em{display:block;font-style:normal;font-size:.42em;color:var(--parch);letter-spacing:.04em;text-shadow:0 2px 12px rgba(0,0,0,.7)}
+.hero .lede{font-size:clamp(1.1rem,1.6vw,1.3rem);max-width:34em;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.cta .btn-soon{background:rgba(10,20,23,.55)}
+.phone{justify-self:center;width:min(320px,80vw);aspect-ratio:9/19.5;border-radius:44px;padding:10px;background:linear-gradient(145deg,#3b3326,#14110c 40%,#2b2419);box-shadow:0 0 0 1px rgba(246,207,122,.25),0 30px 80px rgba(0,0,0,.65),0 0 120px rgba(226,103,47,.25);position:relative}
+.phone img,.phone video{width:100%;height:100%;object-fit:cover;object-position:center 62%;border-radius:35px;display:block;background:#06100f}
+.phone::after{content:"";position:absolute;top:20px;left:50%;translate:-50% 0;width:76px;height:20px;border-radius:12px;background:#0a0a0a}
+.live{position:absolute;left:24px;bottom:26px;display:inline-flex;align-items:center;gap:7px;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.55);border-radius:999px;padding:5px 11px 5px 9px;backdrop-filter:blur(4px)}
+.live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ember);box-shadow:0 0 8px var(--ember)}
+@media (prefers-reduced-motion:no-preference){.live::before{animation:pulse 1.6s ease-in-out infinite}@keyframes pulse{50%{opacity:.35}}}
+/* hero ambience: slow drift on the painting, lantern embers, rolling waves */
+@media (prefers-reduced-motion:no-preference){
+  .hero-bg img{animation:drift-hero 40s ease-in-out infinite alternate;transform-origin:65% 40%}
+  @keyframes drift-hero{from{transform:scale(1)}to{transform:scale(1.06) translate(-1%,-1%)}}
+  @keyframes drift{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.12) translate(-2%,-1.5%)}}
+}
+.embers{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.hero .wrap{position:relative;z-index:1}
+.waves{position:absolute;left:0;right:0;bottom:-1px;height:70px;z-index:1;pointer-events:none;overflow:hidden}
+.waves svg{position:absolute;bottom:0;left:0;width:200%;height:100%}
+.waves .w1{fill:color-mix(in srgb,var(--deep) 55%,transparent)}
+.waves .w2{fill:var(--deep)}
+@media (prefers-reduced-motion:no-preference){
+  .waves .back{animation:roll 16s linear infinite}
+  .waves .front{animation:roll 10s linear infinite reverse}
+  @keyframes roll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+}
+@media (prefers-reduced-motion:no-preference){
+  .phone{animation:bob 7s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-1.2deg)}50%{transform:translateY(-12px) rotate(.6deg)}}
+}
+@media (max-width:860px){
+  .hero{min-height:0}
+  .hero .wrap{grid-template-columns:minmax(0,1fr);padding-block:56px 72px}
+  .hero::before{background:linear-gradient(180deg,rgba(10,20,23,.55) 0%,rgba(10,20,23,.75) 45%,var(--ink) 100%)}
+  .phone{width:min(240px,64vw)}
+}
+
+/* facts */
+.facts{border-block:1px solid color-mix(in srgb,var(--gold) 22%,transparent);background:var(--deep)}
+.facts ul{list-style:none;margin:0 auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding-block:26px}
+.facts li{display:grid;gap:2px;padding-inline:20px;border-left:1px solid var(--tide)}
+.facts li:first-child{border-left:0;padding-left:0}
+.facts b{font-family:var(--f-display);font-weight:400;font-size:2.1rem;color:var(--gold-hi);line-height:1}
+.facts span{color:var(--parch-dim);font-size:.95rem}
+@media (max-width:760px){.facts ul{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:22px}.facts li:nth-child(3){border-left:0;padding-left:0}}
+
+/* feature rows */
+.rows{display:grid;gap:clamp(64px,9vw,120px)}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);align-items:center}
+.row:nth-child(even) .row-art{order:2}
+.row-copy{display:grid;gap:16px;min-width:0}
+.row-copy h3{font-size:clamp(2.2rem,4.6vw,3.4rem);color:var(--gold-hi)}
+.row-copy p{color:var(--parch);max-width:32em}
+.row-copy ul{margin:4px 0 0;padding:0;list-style:none;display:grid;gap:8px;color:var(--parch-dim)}
+.row-copy li{padding-left:26px;position:relative}
+.row-copy li::before{content:"";position:absolute;left:4px;top:.6em;width:9px;height:9px;rotate:45deg;background:var(--gold)}
+.row-art{position:relative;min-width:0}
+.frame{border-radius:18px;overflow:hidden;box-shadow:0 0 0 1px rgba(246,207,122,.22),0 24px 60px rgba(0,0,0,.55)}
+.frame img{width:100%;height:auto}
+.art-haven{aspect-ratio:1/1;max-width:520px;margin-inline:auto;display:grid;place-items:center;border-radius:50%;background:radial-gradient(closest-side,rgba(226,103,47,.32),rgba(224,173,74,.10) 60%,transparent 72%)}
+.art-haven img{width:82%;filter:drop-shadow(0 30px 40px rgba(0,0,0,.6))}
+.art-haven .mini{position:absolute;right:2%;bottom:0;width:34%;border-radius:18px;border:6px solid #1b1610;box-shadow:0 20px 40px rgba(0,0,0,.6);rotate:4deg}
+.art-ocean .mini{position:absolute;left:-4%;bottom:-14%;width:30%;border-radius:16px;border:6px solid #1b1610;box-shadow:0 20px 40px rgba(0,0,0,.6);rotate:-4deg}
+@media (max-width:860px){
+  .row{grid-template-columns:minmax(0,1fr)}
+  .row:nth-child(even) .row-art{order:0}
+  .art-ocean{margin-bottom:40px}
+  .art-ocean .mini{left:auto;right:4%;width:28%}
+}
+
+.art-ocean .mini-phone{position:absolute;left:-5%;bottom:-22%;width:31%;aspect-ratio:9/19.5;border-radius:22px;padding:5px;background:linear-gradient(145deg,#3b3326,#14110c 40%,#2b2419);box-shadow:0 0 0 1px rgba(246,207,122,.25),0 20px 40px rgba(0,0,0,.6);rotate:-4deg}
+.art-ocean .mini-phone video{width:100%;height:100%;object-fit:cover;border-radius:17px;display:block;background:#06100f}
+@media (max-width:860px){.art-ocean{margin-bottom:64px}.art-ocean .mini-phone{left:auto;right:4%;width:30%}}
+@media (prefers-reduced-motion:no-preference){
+    @keyframes sway{0%,100%{transform:rotate(-1.4deg)}50%{transform:rotate(1.4deg)}}
+  .art-haven img:first-child{animation:float 8s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .frame img{animation:drift 30s ease-in-out infinite alternate}
+}
+
+
+/* grand horizon */
+.horizon{background:radial-gradient(1200px 600px at 70% 0%,rgba(44,138,138,.16),transparent 70%),linear-gradient(180deg,var(--ink),#0c1c1f 50%,var(--ink))}
+.horizon .sec-head h2{font-size:clamp(3rem,7vw,5.2rem)}
+.gh-map{position:relative;aspect-ratio:16/10;max-width:100%;border-radius:20px;overflow:hidden;background:#0d4b5c url("assets/gh/sea.webp") center/cover;box-shadow:0 0 0 1px rgba(246,207,122,.3),0 30px 70px rgba(0,0,0,.6),inset 0 0 120px rgba(0,0,0,.45)}
+.gh-map::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 0 8px rgba(26,20,12,.55),inset 0 0 0 9px rgba(246,207,122,.35);border-radius:20px}
+.gh-map .isle{position:absolute;height:auto;filter:drop-shadow(0 18px 18px rgba(0,0,0,.45))}
+.gh-map svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.gh-map .grid path{stroke:rgba(255,255,255,.12);stroke-width:1.5;fill:none}
+.gh-map .cells text{fill:rgba(255,255,255,.35);font:600 22px var(--f-body);text-anchor:middle}
+.route{fill:none;stroke-width:5;stroke-linecap:round;stroke-dasharray:4 16}
+.route.attack{stroke:#ff7a4d}
+.route.convoy{stroke:var(--gold-hi)}
+.route.scout{stroke:#e9f4f2;stroke-dasharray:2 14;stroke-width:4}
+@media (prefers-reduced-motion:no-preference){.route{animation:march 1.2s linear infinite}@keyframes march{to{stroke-dashoffset:-20}}}
+.gh-map use{transform-box:fill-box}
+.lord circle{fill:rgba(226,103,47,.85);stroke:#ffd9a8;stroke-width:3}
+.lord .ring{fill:none;stroke:#ff7a4d;stroke-width:3}
+.chip{position:absolute;translate:-50% -50%;white-space:nowrap;font-size:clamp(.62rem,1.3vw,.82rem);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--parch);border-radius:999px;padding:4px 11px;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.chip.rival{background:#ff9a73}
+.chip.ally{background:var(--gold-hi)}
+.chip.lord{background:#ffb48a}
+.legend{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 22px;font-size:.9rem;color:var(--parch-dim)}
+.legend li{display:flex;align-items:center;gap:6px}
+.legend i{width:18px;height:0;border-top:3px dashed}
+.legend i.attack{border-color:#ff7a4d}.legend i.convoy{border-color:var(--gold-hi)}.legend i.scout{border-color:#e9f4f2;border-top-style:dotted}
+@media (max-width:640px){.gh-map{aspect-ratio:16/12}.gh-map .cells{display:none}}
+.gh-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 24px;margin-top:clamp(40px,6vw,64px)}
+.tile{display:grid;gap:10px;align-content:start;min-width:0}
+.tile-art{aspect-ratio:4/3;border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px rgba(246,207,122,.2),0 16px 34px rgba(0,0,0,.45);background:radial-gradient(closest-side,rgba(224,173,74,.22),rgba(16,33,31,1))}
+.tile-art img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.tile:hover .tile-art img{transform:scale(1.05)}
+.tile-art.contain img{object-fit:contain;padding:8%}
+.tile-art.paper img{padding:5% 22%;rotate:-3deg}
+.tile h3{font-size:1.9rem;color:var(--gold-hi);margin-top:6px}
+.tile p{color:var(--parch-dim);font-size:1rem}
+@media (max-width:900px){.gh-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.gh-tiles{grid-template-columns:minmax(0,1fr);gap:22px}.tile{grid-template-columns:112px minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:16px;row-gap:4px}.tile p{align-self:start}.tile-art{grid-row:span 2;aspect-ratio:1/1}.tile h3{font-size:1.5rem;margin-top:0}.tile p{font-size:.95rem}}
+
+/* watch */
+.watch{background:linear-gradient(180deg,var(--ink),#0d1b1d 40%,var(--ink))}
+.reels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.reel{position:relative;margin:0;border-radius:18px;overflow:hidden;aspect-ratio:9/16;background:#06100f;box-shadow:0 0 0 1px rgba(246,207,122,.2),0 24px 50px rgba(0,0,0,.5)}
+.reel video{width:100%;height:100%;object-fit:cover;display:block}
+.reel figcaption{position:absolute;left:0;right:0;bottom:0;padding:48px 18px 18px;background:linear-gradient(180deg,transparent,rgba(6,12,13,.92));display:grid;gap:2px;pointer-events:none}
+.reel figcaption b{font-family:var(--f-display);font-weight:400;font-size:1.7rem;color:var(--gold-hi);line-height:1.05}
+.reel figcaption span{font-size:.95rem;color:var(--parch)}
+.sound{position:absolute;top:14px;right:14px;z-index:2;display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(246,207,122,.45);background:rgba(6,12,13,.6);color:var(--parch);border-radius:999px;padding:7px 13px 7px 10px;font:600 .85rem var(--f-body);cursor:pointer;backdrop-filter:blur(4px)}
+.sound:hover{border-color:var(--gold-hi);color:var(--gold-hi)}
+.sound svg{width:18px;height:18px}
+.sound .on{display:none}
+.sound[aria-pressed="true"] .on{display:inline}
+.sound[aria-pressed="true"] .off{display:none}
+.sound[aria-pressed="true"]{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.watch-more{display:flex;justify-content:center;margin-top:36px}
+@media (max-width:900px){
+  .reels{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:min(78vw,320px);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px}
+  .reel{scroll-snap-align:start}
+}
+
+/* scroll reveal, only when the script is running */
+.js .reveal{opacity:.15;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+.js .reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.js .reveal{opacity:1;transform:none;transition:none}}
+
+/* fleet cards */
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:clamp(64px,9vw,110px)}
+.card{position:relative;border-radius:16px;overflow:hidden;min-height:440px;display:flex;align-items:flex-end;box-shadow:0 0 0 1px rgba(246,207,122,.2)}
+.card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.card:hover img{transform:scale(1.06)}
+@media (prefers-reduced-motion:no-preference){.card img{animation:drift 26s ease-in-out infinite alternate}.card:nth-child(2) img{animation-delay:-9s}.card:nth-child(3) img{animation-delay:-17s}}
+.card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,20,23,0) 35%,rgba(10,20,23,.95) 88%)}
+.card div{position:relative;z-index:1;padding:24px;display:grid;gap:8px}
+.card h3{font-size:2rem;color:var(--gold-hi)}
+.card p{color:var(--parch);font-size:1rem}
+@media (max-width:900px){.cards{grid-template-columns:minmax(0,1fr)}.card{min-height:360px}}
+
+/* screens */
+.screens{background:linear-gradient(180deg,var(--ink),var(--deep) 30%,var(--deep) 70%,var(--ink))}
+.strip-wrap{position:relative}
+.strip{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:max(clamp(16px,4vw,40px), env(safe-area-inset-left,0px));padding:8px max(clamp(16px,4vw,40px), env(safe-area-inset-left,0px)) 24px;scrollbar-width:thin;scrollbar-color:var(--tide) transparent;max-width:1180px;margin:0 auto}
+.strip figure{margin:0;flex:0 0 auto;width:clamp(200px,22vw,250px);scroll-snap-align:start}
+.strip img{width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:14px;box-shadow:0 0 0 1px rgba(246,207,122,.18),0 14px 30px rgba(0,0,0,.45)}
+.strip-ctl{display:flex;gap:10px;justify-content:flex-end;margin-top:-6px}
+.strip-ctl button{width:46px;height:46px;border-radius:50%;border:1px solid color-mix(in srgb,var(--gold) 45%,transparent);background:var(--ink);color:var(--gold-hi);font-size:1.3rem;cursor:pointer}
+.strip-ctl button:hover{background:var(--tide)}
+
+/* captain's log */
+.log{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(28px,5vw,64px);align-items:center}
+.parchment{position:relative;color:var(--paper-ink);background:#e9d6a6 url("assets/paper.jpg") center/cover;border-radius:6px;padding:clamp(28px,4vw,48px);box-shadow:0 30px 60px rgba(0,0,0,.55),inset 0 0 60px rgba(90,55,20,.35);rotate:-.6deg}
+.parchment .eyebrow{color:#8a4b12}
+.parchment h3{font-size:clamp(2.2rem,4vw,3rem);color:var(--paper-ink);margin:8px 0 18px}
+.parchment ul{margin:0;padding:0;list-style:none;display:grid;gap:10px;font-size:1.05rem}
+.parchment li{padding-left:26px;position:relative}
+.parchment li::before{content:"✦";position:absolute;left:0;color:#9a5a1c}
+.parchment .sig{margin-top:22px;font-family:var(--f-display);font-size:1.4rem;color:#6b3c10}
+.log-side{display:grid;gap:18px}
+.log-side h2{font-size:clamp(2.4rem,5.5vw,4rem);color:var(--gold-hi)}
+.log-side p{color:var(--parch-dim)}
+.textlink{display:inline-flex;align-items:center;gap:8px;font-weight:700;text-decoration:none;color:var(--gold-hi);border-bottom:1px solid color-mix(in srgb,var(--gold) 50%,transparent);padding-bottom:2px;justify-self:start}
+.textlink:hover{border-color:var(--gold-hi)}
+@media (max-width:860px){.log{grid-template-columns:minmax(0,1fr)}.log-side{order:-1}}
+
+/* follow */
+.socials{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.social{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center;padding:22px;border-radius:16px;background:var(--deep);border:1px solid var(--tide);text-decoration:none;color:var(--parch);transition:border-color .15s ease, transform .15s ease}
+.social:hover{border-color:var(--gold);transform:translateY(-3px)}
+.social svg.logo{width:46px;height:46px}
+.social b{display:block;font-size:1.15rem}
+.social span{display:block;color:var(--parch-dim);font-size:.95rem}
+.social .arrow{color:var(--gold);font-size:1.3rem}
+@media (max-width:900px){.socials{grid-template-columns:minmax(0,1fr)}}
+
+/* download */
+.download{position:relative;isolation:isolate;overflow:hidden}
+.download-bg{position:absolute;inset:0;z-index:-2}
+.download-bg img{width:100%;height:100%;object-fit:cover;object-position:center 60%}
+.download::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--ink) 0%,rgba(10,20,23,.78) 30%,rgba(10,20,23,.86) 100%)}
+.ports{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.port{display:grid;gap:14px;align-content:start;padding:clamp(24px,3.5vw,36px);border-radius:18px;background:rgba(16,33,31,.82);border:1px solid color-mix(in srgb,var(--gold) 35%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.port.soon{border-style:dashed;border-color:color-mix(in srgb,var(--parch) 30%,transparent)}
+.port h3{font-size:2.3rem;color:var(--gold-hi);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.port p{color:var(--parch-dim)}
+.port .btn-play,.port .btn-soon{justify-self:start;margin-top:6px}
+@media (max-width:760px){.ports{grid-template-columns:minmax(0,1fr)}}
+
+/* footer */
+footer{border-top:1px solid var(--tide);padding-block:36px calc(36px + env(safe-area-inset-bottom,0px));color:var(--parch-dim);font-size:.92rem}
+footer .wrap{display:flex;flex-wrap:wrap;gap:14px 28px;align-items:center;justify-content:space-between}
+footer nav{display:flex;flex-wrap:wrap;gap:18px}
+footer a{color:var(--parch-dim);text-decoration:none}
+footer a:hover{color:var(--gold-hi)}
+footer .fine{flex-basis:100%;font-size:.8rem;opacity:.75}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="assets/icon.webp" alt="" width="36" height="36"><span>Curse of Scully</span></a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#game">The game</a>
+      <a href="#multiplayer">Multiplayer</a>
+      <a href="#watch">Watch</a>
+      <a href="#screens">Screenshots</a>
+      <a href="#log">Updates</a>
+      <a href="#follow">Follow</a>
+      <a href="#download">Download</a>
+    </nav>
+    <a class="btn-play" href="https://play.google.com/store/apps/details?id=com.partybeastgames.curseofscullyy" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#34a853" d="M3.6 1.8 13.4 12l-9.8 10.2c-.4-.2-.6-.6-.6-1.1V2.9c0-.5.2-.9.6-1.1z"/><path fill="#fbbc04" d="m16.8 8.6 3.4 2c.9.5.9 1.8 0 2.3l-3.4 2L13.4 12z"/><path fill="#4285f4" d="M3.6 1.8c.3-.2.8-.2 1.2 0l12 6.8-3.4 3.4z"/><path fill="#ea4335" d="m13.4 12 3.4 3.4-12 6.8c-.4.2-.9.2-1.2 0z"/></svg>
+      <span><small>Get it on</small><b>Google Play</b></span>
+    </a>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="hero">
+  <div class="hero-bg">
+    <picture>
+      <source media="(max-width:860px)" srcset="assets/hero-m-720.webp 720w, assets/hero-m-1080.webp 1080w" sizes="100vw">
+      <img src="assets/hero-1440.webp" srcset="assets/hero-1440.webp 1440w, assets/hero-2160.webp 2160w, assets/hero-2880.webp 2880w" sizes="100vw" alt="A pirate harbour at sunset, ships at anchor and lanterns glowing on the docks" fetchpriority="high">
+    </picture>
+  </div>
+  <div class="wrap">
+    <div class="hero-copy">
+      <span class="eyebrow">Free pirate strategy game for Android</span>
+      <h1>Curse of Scully<em>Rule the seas from your own cove</em></h1>
+      <p class="lede">Build a pirate haven, raise a fleet from Sloop to Galleon, sail a living ocean where storms roll in, and take on real captains in Grand Horizon multiplayer.</p>
+      <div class="cta">
+        <a class="btn-play" href="https://play.google.com/store/apps/details?id=com.partybeastgames.curseofscullyy" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#34a853" d="M3.6 1.8 13.4 12l-9.8 10.2c-.4-.2-.6-.6-.6-1.1V2.9c0-.5.2-.9.6-1.1z"/><path fill="#fbbc04" d="m16.8 8.6 3.4 2c.9.5.9 1.8 0 2.3l-3.4 2L13.4 12z"/><path fill="#4285f4" d="M3.6 1.8c.3-.2.8-.2 1.2 0l12 6.8-3.4 3.4z"/><path fill="#ea4335" d="m13.4 12 3.4 3.4-12 6.8c-.4.2-.9.2-1.2 0z"/></svg>
+          <span><small>Get it on</small><b>Google Play</b></span>
+        </a>
+        <span class="btn-soon" title="The PC version is on its way">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M3 5.5 10.5 4.4v7.1H3zm0 13L10.5 19.6v-7H3zm8.4 1.2L21 21V12.6h-9.6zm0-15.4v7.2H21V3z"/></svg>
+          <span><small>Windows PC</small><b>Coming soon</b></span>
+        </span>
+      </div>
+    </div>
+    <div class="phone">
+      <video data-auto autoplay muted loop playsinline preload="auto" poster="assets/video/hero-loop.jpg" aria-label="Gameplay: sailing through a storm, a night crossing by lantern light and snowy northern waters">
+        <source src="assets/video/hero-loop.mp4" type="video/mp4">
+        <source src="assets/video/hero-loop.webm" type="video/webm">
+      </video>
+      <span class="live">Gameplay</span>
+    </div>
+  </div>
+  <canvas class="embers" aria-hidden="true"></canvas>
+  <div class="waves" aria-hidden="true">
+    <svg class="back" viewBox="0 0 2880 70" preserveAspectRatio="none"><path class="w1" d="M0 38 Q 180 8 360 38 T 720 38 T 1080 38 T 1440 38 T 1800 38 T 2160 38 T 2520 38 T 2880 38 V70 H0z"/></svg>
+    <svg class="front" viewBox="0 0 2880 70" preserveAspectRatio="none"><path class="w2" d="M0 50 Q 240 26 480 50 T 960 50 T 1440 50 T 1920 50 T 2400 50 T 2880 50 V70 H0z"/></svg>
+  </div>
+</section>
+
+<section class="facts" aria-label="At a glance">
+  <ul class="wrap">
+    <li><b>20+</b><span>buildings to grow and upgrade</span></li>
+    <li><b>6</b><span>ship classes, Sloop to Galleon</span></li>
+    <li><b>Online</b><span>multiplayer on the Grand Horizon</span></li>
+    <li><b>Free</b><span>to download and play</span></li>
+  </ul>
+</section>
+
+<section class="sec" id="game">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">The game</span>
+      <h2>A pirate's life, one cove at a time</h2>
+      <p>Curse of Scully mixes base building, fleet command, open-sea sailing and online multiplayer. Grow your harbour while you play, then take the helm yourself.</p>
+    </div>
+
+    <div class="rows">
+      <article class="row reveal">
+        <div class="row-art art-haven">
+          <img src="assets/building.webp" alt="A two-storey pirate hideout with a Jolly Roger flag">
+          <img class="mini" src="assets/shots/s08.webp" alt="Gameplay: a palm-lined pirate cove with a wooden dock">
+        </div>
+        <div class="row-copy">
+          <span class="eyebrow">Build</span>
+          <h3>Build your pirate haven</h3>
+          <p>Start with a quiet cove and grow it into a busy harbour town. Your buildings gather wood, ore and water while you play, and you can pick up any building or lantern post and move it where you like.</p>
+          <ul>
+            <li>Over 20 buildings to raise and upgrade</li>
+            <li>A Water Well that climbs all the way to level 100</li>
+            <li>Night lanterns that light the docks after dark</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="row reveal">
+        <div class="row-art art-ocean">
+          <div class="frame"><img src="assets/ocean.webp" alt="A sunny bay with a stone fortress, palm islands and a pirate ship under sail"></div>
+          <div class="mini-phone">
+            <video data-auto muted loop playsinline preload="none" poster="assets/video/weather-loop.jpg" aria-label="Gameplay: calm seas, night watch, thunderstorm, snow and blizzard">
+              <source src="assets/video/weather-loop.mp4" type="video/mp4">
+              <source src="assets/video/weather-loop.webm" type="video/webm">
+            </video>
+          </div>
+        </div>
+        <div class="row-copy">
+          <span class="eyebrow">Sail</span>
+          <h3>Sail a living ocean</h3>
+          <p>In Ocean Tycoon you steer your own ship between the islands. Storms hit hard and your hull creaks as the weather turns. Brave the rain to Castle Scullywagger, grab supply drops, and follow a new treasure chart every day.</p>
+          <ul>
+            <li>Islands from Treasure Cove to arctic snow</li>
+            <li>Real storms, snow and night crossings</li>
+            <li>Play with touch, or set your own keyboard keys</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec horizon" id="multiplayer">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Online multiplayer</span>
+      <h2>Grand Horizon</h2>
+      <p>Take your fleet online. Grand Horizon is a shared sea full of real captains and pirate lords. Scout your rivals, raid their warehouses, guard your own harbour and build an alliance that rules the map.</p>
+    </div>
+
+    <div class="gh-map reveal" role="img" aria-label="Illustration of the Grand Horizon map: an attack fleet sails from your island to a rival captain, a trade convoy arrives from an ally, and a scout heads toward a pirate lord">
+      <img class="isle" src="assets/gh/isle-temple.webp" alt="" style="left:13.1%;top:47%;width:26.25%">
+      <img class="isle" src="assets/gh/isle-silver.webp" alt="" style="left:67.5%;top:10%;width:18.75%">
+      <img class="isle" src="assets/gh/isle-sugar.webp" alt="" style="left:62.5%;top:58%;width:22.5%">
+      <svg viewBox="0 0 1600 1000" aria-hidden="true">
+        <defs>
+          <g id="gh-ship" transform="scale(1.7)"><path d="M-16 2 L16 2 L10 10 L-10 10 Z" fill="#3a2412"/><path d="M0 2 V-20 L13 0 Z" fill="#f3e6c4"/><path d="M-3 1 V-14 L-13 0 Z" fill="#d9c9a0"/><path d="M0 -20 L7 -23 L0 -25 Z" fill="#e2672f"/></g>
+        </defs>
+        <g class="grid">
+          <path d="M200 0V1000M400 0V1000M600 0V1000M800 0V1000M1000 0V1000M1200 0V1000M1400 0V1000M0 200H1600M0 400H1600M0 600H1600M0 800H1600"/>
+          <g class="cells"><text x="100" y="30">K3</text><text x="300" y="30">L3</text><text x="500" y="30">M3</text><text x="700" y="30">N3</text><text x="900" y="30">O3</text><text x="1100" y="30">P3</text><text x="1300" y="30">Q3</text><text x="1500" y="30">R3</text></g>
+        </g>
+        <g class="lord">
+          <circle cx="230" cy="190" r="18"/>
+          <circle class="ring" cx="230" cy="190" r="18"><animate attributeName="r" values="18;54" dur="2.4s" repeatCount="indefinite"/><animate attributeName="opacity" values=".9;0" dur="2.4s" repeatCount="indefinite"/></circle>
+        </g>
+        <path id="r-attack" class="route attack" d="M560 540 C 720 380, 920 300, 1100 320"/>
+        <path id="r-convoy" class="route convoy" d="M1040 780 C 900 880, 720 860, 640 760"/>
+        <path id="r-scout" class="route scout" d="M380 500 C 320 400, 270 320, 245 230"/>
+        <use href="#gh-ship"><animateMotion dur="8s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear"><mpath href="#r-attack"/></animateMotion></use>
+        <use href="#gh-ship" transform="scale(1)"><animateMotion dur="10s" begin="-3s" repeatCount="indefinite"><mpath href="#r-convoy"/></animateMotion></use>
+        <use href="#gh-ship"><animateMotion dur="7s" begin="-1s" repeatCount="indefinite"><mpath href="#r-scout"/></animateMotion></use>
+      </svg>
+      <span class="chip you" style="left:26%;top:86%">Your island</span>
+      <span class="chip rival" style="left:77%;top:6%">Rival captain</span>
+      <span class="chip ally" style="left:72%;top:93%">Alliance harbour</span>
+      <span class="chip lord" style="left:14.4%;top:28%">Pirate lord</span>
+    </div>
+    <ul class="legend">
+      <li><i class="attack"></i>Attack fleet</li>
+      <li><i class="convoy"></i>Trade convoy</li>
+      <li><i class="scout"></i>Scout</li>
+    </ul>
+
+    <div class="gh-tiles">
+      <article class="tile reveal">
+        <div class="tile-art"><img src="assets/gh/raid.webp" alt="Pirate ships firing on an island harbour" loading="lazy"></div>
+        <h3>Raid rival captains</h3>
+        <p>Scout an island to see what it guards, then send your fleet to break its Castillo and sail home with the loot. Keep your own defences strong, because rivals will come for yours.</p>
+      </article>
+      <article class="tile reveal">
+        <div class="tile-art contain"><img src="assets/gh/den.webp" alt="A patched canvas tent with a map table, the Den of Pirates" loading="lazy"></div>
+        <h3>Alliances</h3>
+        <p>Found or join a Den of Pirates of up to 15 captains. Share a treasury, rise through the ranks and park your ships in allies' harbours to help defend them.</p>
+      </article>
+      <article class="tile reveal">
+        <div class="tile-art"><img src="assets/gh/warisle.webp" alt="Ships sailing between jungle islands at sunset" loading="lazy"></div>
+        <h3>War Islands</h3>
+        <p>Garrison War Islands with your fleet and collect tribute for as long as you can hold them.</p>
+      </article>
+      <article class="tile reveal">
+        <div class="tile-art"><img src="assets/gh/convoy.webp" alt="Merchant galleons under full sail outside a harbour town" loading="lazy"></div>
+        <h3>Trade and intercept</h3>
+        <p>Sell goods to other captains on the market and send convoys to collect them. A convoy at sea is a target, so plan your route.</p>
+      </article>
+      <article class="tile reveal">
+        <div class="tile-art"><img src="assets/gh/raiders.webp" alt="A burning harbour at night with raiders landing on the beach" loading="lazy"></div>
+        <h3>Hire raiders</h3>
+        <p>Short on ships? Hire raiders to strike an island for you.</p>
+      </article>
+      <article class="tile reveal">
+        <div class="tile-art contain paper"><img src="assets/kraken.webp" alt="A wanted poster showing the Kraken wrapping a ship in its tentacles" loading="lazy"></div>
+        <h3>Pirate lords and events</h3>
+        <p>The Kraken King and Storm Empress Nyx rule the far waters. Horizon events bring the Nyx Kraken hunt and whaling grounds you fish with other captains.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec watch" id="watch">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Watch</span>
+      <h2>Hear the storm</h2>
+      <p>Real gameplay, straight from the game. Turn the sound on for rain, thunder and a creaking hull.</p>
+    </div>
+    <div class="reels">
+      <figure class="reel reveal">
+        <video data-auto muted loop playsinline preload="none" poster="assets/video/storm-day.jpg" aria-label="A ship sails past islands through a heavy rainstorm">
+          <source src="assets/video/storm-day.mp4" type="video/mp4">
+          <source src="assets/video/storm-day.webm" type="video/webm">
+        </video>
+        <button class="sound" type="button" aria-pressed="false" aria-label="Sound for Storm at sea">
+          <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m22 9-6 6m0-6 6 6"/></svg>
+          <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+          <span class="off">Sound on</span><span class="on">Sound off</span>
+        </button>
+        <figcaption><b>Storm at sea</b><span>Rain, thunder and six islands</span></figcaption>
+      </figure>
+      <figure class="reel reveal">
+        <video data-auto muted loop playsinline preload="none" poster="assets/video/storm-night.jpg" aria-label="A ship crosses a dark sea at night, lit by its own lantern">
+          <source src="assets/video/storm-night.mp4" type="video/mp4">
+          <source src="assets/video/storm-night.webm" type="video/webm">
+        </video>
+        <button class="sound" type="button" aria-pressed="false" aria-label="Sound for Night crossing">
+          <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m22 9-6 6m0-6 6 6"/></svg>
+          <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+          <span class="off">Sound on</span><span class="on">Sound off</span>
+        </button>
+        <figcaption><b>Night crossing</b><span>Only your lantern lights the way</span></figcaption>
+      </figure>
+      <figure class="reel reveal">
+        <video data-auto muted loop playsinline preload="none" poster="assets/video/whats-new-176.jpg" aria-label="Update video: battle the castle, Treasure Cove, new islands and tap the sea to sail">
+          <source src="assets/video/whats-new-176.mp4" type="video/mp4">
+          <source src="assets/video/whats-new-176.webm" type="video/webm">
+        </video>
+        <button class="sound" type="button" aria-pressed="false" aria-label="Sound for Update 1.76">
+          <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m22 9-6 6m0-6 6 6"/></svg>
+          <svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+          <span class="off">Sound on</span><span class="on">Sound off</span>
+        </button>
+        <figcaption><b>Update 1.76</b><span>Castle battles, Treasure Cove, new islands</span></figcaption>
+      </figure>
+    </div>
+    <div class="watch-more">
+      <a class="textlink" href="https://www.youtube.com/@CurseofScully" target="_blank" rel="noopener">More videos on YouTube <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="sec screens" id="screens">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Screenshots</span>
+      <h2>See it in action</h2>
+      <p>Straight from the game on Android.</p>
+    </div>
+  </div>
+  <div class="strip-wrap">
+    <div class="strip" id="strip" tabindex="0" aria-label="Screenshots, scroll sideways">
+      <figure><img src="assets/shots/s01.webp" alt="Battle the Kraken: hunt sea monsters by lantern light" loading="lazy"></figure>
+      <figure><img src="assets/shots/s02.webp" alt="Build your pirate haven: grow and upgrade over 20 buildings" loading="lazy"></figure>
+      <figure><img src="assets/shots/s03.webp" alt="Storm the castle: brave the rain to Castle Scullywagger" loading="lazy"></figure>
+      <figure><img src="assets/shots/s04.webp" alt="Sail a living ocean: steer your own ship between the islands" loading="lazy"></figure>
+      <figure><img src="assets/shots/s05.webp" alt="Daily treasure hunts: a new chart to chase every day" loading="lazy"></figure>
+      <figure><img src="assets/shots/s06.webp" alt="Build your fleet: six ship classes, from Sloop to Galleon" loading="lazy"></figure>
+      <figure><img src="assets/shots/s07.webp" alt="Command your armada: raid rivals and defend your harbour" loading="lazy"></figure>
+      <figure><img src="assets/shots/s08.webp" alt="A cozy pirate cove: gather wood, ore and water as you play" loading="lazy"></figure>
+    </div>
+    <div class="wrap strip-ctl">
+      <button type="button" id="prev" aria-label="Previous screenshots">&#8592;</button>
+      <button type="button" id="next" aria-label="Next screenshots">&#8594;</button>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="log">
+  <div class="wrap log">
+    <div class="parchment reveal">
+      <span class="eyebrow">Captain's Log · v1.78</span>
+      <h3>Rougher seas, a deeper well</h3>
+      <ul>
+        <li>Water Well climbs to level 100, with no Water cost and 20% faster upgrades.</li>
+        <li>Ocean Tycoon storms hit harder, the hull creaks, and supply drops are collected on touch.</li>
+        <li>Keyboard players can choose their own keys.</li>
+        <li>Bounties pay more silver.</li>
+        <li>A clearer War Island send picker.</li>
+      </ul>
+      <p class="sig">Fair winds, the Curse of Scully crew</p>
+    </div>
+    <div class="log-side">
+      <span class="eyebrow">Updates</span>
+      <h2>Always something new on the horizon</h2>
+      <p>The game gets regular updates with new islands, ships, relics and events. Every release gets a short video in our Dev Diary.</p>
+      <a class="textlink" href="https://youtube.com/playlist?list=PLM3qxtWSTT28" target="_blank" rel="noopener">Watch the Dev Diary <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="follow" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Follow the crew</span>
+      <h2>Join us on social</h2>
+      <p>Gameplay shorts, update videos and behind-the-scenes looks at what we are building next.</p>
+    </div>
+    <div class="socials reveal">
+      <a class="social" href="https://www.youtube.com/@CurseofScully" target="_blank" rel="noopener">
+        <svg class="logo" viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="9" width="44" height="30" rx="9" fill="#ff0033"/><path d="M20 17v14l12-7z" fill="#fff"/></svg>
+        <span><b>YouTube</b><span>@CurseofScully</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="social" href="https://www.tiktok.com/@curseofscully" target="_blank" rel="noopener">
+        <svg class="logo" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#000"/><path d="M31.5 11c.6 3.6 2.8 5.8 6.3 6.1v4.6c-2.3.1-4.4-.6-6.3-1.9v8.9c0 6-4.4 9.6-9.4 9.6-5.4 0-9.4-4.3-8.8-9.6.5-4.5 4.5-7.8 9.6-7.3v4.8c-2.6-.6-4.9 1-5 3.2-.1 2.3 1.7 4.1 4 4.1 2.4 0 4-1.6 4-4.3V11z" fill="#25f4ee" transform="translate(-1.2 -1)"/><path d="M31.5 11c.6 3.6 2.8 5.8 6.3 6.1v4.6c-2.3.1-4.4-.6-6.3-1.9v8.9c0 6-4.4 9.6-9.4 9.6-5.4 0-9.4-4.3-8.8-9.6.5-4.5 4.5-7.8 9.6-7.3v4.8c-2.6-.6-4.9 1-5 3.2-.1 2.3 1.7 4.1 4 4.1 2.4 0 4-1.6 4-4.3V11z" fill="#fe2c55" transform="translate(1.2 1)"/><path d="M31.5 11c.6 3.6 2.8 5.8 6.3 6.1v4.6c-2.3.1-4.4-.6-6.3-1.9v8.9c0 6-4.4 9.6-9.4 9.6-5.4 0-9.4-4.3-8.8-9.6.5-4.5 4.5-7.8 9.6-7.3v4.8c-2.6-.6-4.9 1-5 3.2-.1 2.3 1.7 4.1 4 4.1 2.4 0 4-1.6 4-4.3V11z" fill="#fff"/></svg>
+        <span><b>TikTok</b><span>@curseofscully</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="social" href="https://www.instagram.com/curse_of_scully/" target="_blank" rel="noopener">
+        <svg class="logo" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="ig" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#feda75"/><stop offset=".35" stop-color="#fa7e1e"/><stop offset=".6" stop-color="#d62976"/><stop offset=".85" stop-color="#962fbf"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs><rect width="48" height="48" rx="13" fill="url(#ig)"/><rect x="11" y="11" width="26" height="26" rx="8" fill="none" stroke="#fff" stroke-width="3"/><circle cx="24" cy="24" r="6.2" fill="none" stroke="#fff" stroke-width="3"/><circle cx="32" cy="16" r="1.9" fill="#fff"/></svg>
+        <span><b>Instagram</b><span>@curse_of_scully</span></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="sec download" id="download">
+  <div class="download-bg"><img src="assets/hero-1440.webp" alt="" loading="lazy"></div>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Download</span>
+      <h2>Choose your port</h2>
+      <p>Curse of Scully is free to play. Pick your platform and set sail.</p>
+    </div>
+    <div class="ports reveal">
+      <div class="port">
+        <h3>Android</h3>
+        <p>Play on your phone or tablet. Your harbour keeps working while you are away.</p>
+        <a class="btn-play" href="https://play.google.com/store/apps/details?id=com.partybeastgames.curseofscullyy" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#34a853" d="M3.6 1.8 13.4 12l-9.8 10.2c-.4-.2-.6-.6-.6-1.1V2.9c0-.5.2-.9.6-1.1z"/><path fill="#fbbc04" d="m16.8 8.6 3.4 2c.9.5.9 1.8 0 2.3l-3.4 2L13.4 12z"/><path fill="#4285f4" d="M3.6 1.8c.3-.2.8-.2 1.2 0l12 6.8-3.4 3.4z"/><path fill="#ea4335" d="m13.4 12 3.4 3.4-12 6.8c-.4.2-.9.2-1.2 0z"/></svg>
+          <span><small>Get it on</small><b>Google Play</b></span>
+        </a>
+      </div>
+      <div class="port soon">
+        <h3>Windows PC <span class="pill">Coming soon</span></h3>
+        <p>The PC version is on its way, with full keyboard controls. Follow us on YouTube or TikTok to hear the moment it lands.</p>
+        <span class="btn-soon">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M3 5.5 10.5 4.4v7.1H3zm0 13L10.5 19.6v-7H3zm8.4 1.2L21 21V12.6h-9.6zm0-15.4v7.2H21V3z"/></svg>
+          <span><small>Download for Windows</small><b>Not yet available</b></span>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="assets/icon.webp" alt="" width="36" height="36"><span>Curse of Scully</span></a>
+    <nav aria-label="Footer">
+      <a href="https://play.google.com/store/apps/details?id=com.partybeastgames.curseofscullyy" target="_blank" rel="noopener">Google Play</a>
+      <a href="https://www.youtube.com/@CurseofScully" target="_blank" rel="noopener">YouTube</a>
+      <a href="https://www.tiktok.com/@curseofscully" target="_blank" rel="noopener">TikTok</a>
+      <a href="https://www.instagram.com/curse_of_scully/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://kraabat.github.io/curse-of-scully-privacy/" target="_blank" rel="noopener">Privacy policy</a>
+    </nav>
+    <p class="fine">© 2026 Curse of Scully. Google Play and the Google Play logo are trademarks of Google LLC.</p>
+  </div>
+</footer>
+
+<script>
+document.documentElement.classList.remove('no-js');document.documentElement.classList.add('js');
+(function(){
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hasIO='IntersectionObserver' in window;
+
+  /* scroll reveal */
+  var rev=document.querySelectorAll('.reveal');
+  if(hasIO&&!reduce){
+    var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}})},{rootMargin:'0px 0px -8% 0px'});
+    rev.forEach(function(el){ro.observe(el)});
+  } else rev.forEach(function(el){el.classList.add('in')});
+
+  /* videos play only while on screen */
+  var vids=document.querySelectorAll('video[data-auto]');
+  function tryPlay(v){var p=v.play();if(p&&p.catch)p.catch(function(){});}
+  if(!reduce){
+    if(hasIO){
+      var vo=new IntersectionObserver(function(es){es.forEach(function(e){
+        var v=e.target;
+        if(e.isIntersecting){if(v.preload==='none')v.preload='auto';tryPlay(v);}else v.pause();
+      })},{threshold:.25});
+      vids.forEach(function(v){vo.observe(v)});
+    } else vids.forEach(tryPlay);
+  } else vids.forEach(function(v){v.removeAttribute('autoplay');v.pause();v.controls=true;});
+
+  /* one sound at a time */
+  var btns=document.querySelectorAll('.sound');
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){
+      var v=b.parentNode.querySelector('video');
+      var turnOn=b.getAttribute('aria-pressed')!=='true';
+      btns.forEach(function(o){o.setAttribute('aria-pressed','false');o.parentNode.querySelector('video').muted=true;});
+      if(turnOn){v.muted=false;v.currentTime=0;tryPlay(v);b.setAttribute('aria-pressed','true');}
+    });
+  });
+
+  /* the Grand Horizon map stays still for reduced motion */
+  if(reduce)document.querySelectorAll('.gh-map svg').forEach(function(g){if(g.pauseAnimations)g.pauseAnimations();});
+
+  /* screenshots: arrows plus a gentle auto-advance */
+  var s=document.getElementById('strip');
+  function stepW(){var f=s.querySelector('figure');return f?f.getBoundingClientRect().width+18:260;}
+  function step(d){
+    var max=s.scrollWidth-s.clientWidth-4;
+    if(d>0&&s.scrollLeft>=max){s.scrollTo({left:0,behavior:'smooth'});return;}
+    s.scrollBy({left:d*stepW(),behavior:'smooth'});
+  }
+  document.getElementById('prev').addEventListener('click',function(){step(-1)});
+  document.getElementById('next').addEventListener('click',function(){step(1)});
+  if(!reduce){
+    var hold=false;
+    ['pointerenter','focusin','touchstart'].forEach(function(t){s.addEventListener(t,function(){hold=true},{passive:true})});
+    ['pointerleave','focusout'].forEach(function(t){s.addEventListener(t,function(){hold=false})});
+    setInterval(function(){if(!hold&&!document.hidden)step(1)},3200);
+  }
+
+  /* lantern embers drifting up through the hero */
+  var c=document.querySelector('.embers');
+  if(c&&c.getContext&&!reduce){
+    var ctx=c.getContext('2d'),W=0,H=0,dpr=Math.min(window.devicePixelRatio||1,2),P=[],run=true;
+    function size(){var r=c.getBoundingClientRect();W=r.width;H=r.height;c.width=W*dpr;c.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
+    function spawn(y){return{x:Math.random()*W,y:y==null?H+10:y,r:Math.random()*1.8+.6,vy:Math.random()*.45+.2,vx:(Math.random()-.5)*.25,ph:Math.random()*6.28,life:Math.random()*.5+.5};}
+    size();for(var i=0;i<70;i++)P.push(spawn(Math.random()*H));
+    window.addEventListener('resize',size);
+    if(hasIO)new IntersectionObserver(function(es){run=es[0].isIntersecting;if(run)requestAnimationFrame(tick)}).observe(c);
+    function tick(t){
+      if(!run)return;
+      ctx.clearRect(0,0,W,H);ctx.globalCompositeOperation='lighter';
+      for(var i=0;i<P.length;i++){
+        var p=P[i];p.y-=p.vy;p.x+=p.vx+Math.sin(t/1400+p.ph)*.25;
+        if(p.y<-10)P[i]=p=spawn();
+        var a=Math.max(0,Math.min(1,p.y/H))*p.life*(.55+.45*Math.sin(t/260+p.ph));
+        var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*5);
+        g.addColorStop(0,'rgba(255,214,140,'+a+')');g.addColorStop(.35,'rgba(226,103,47,'+a*.55+')');g.addColorStop(1,'rgba(226,103,47,0)');
+        ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,p.r*5,0,6.283);ctx.fill();
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+})();
+</script>
+</body>
+</html>
