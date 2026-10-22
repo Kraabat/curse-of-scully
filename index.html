@@ -20,7 +20,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap">
 <style>
 /* Layout: a dusk harbour opens the page, then the voyage reads top to bottom:
-   haven, ocean, kraken, fleet, screens, captain's log, follow, download.
+   haven, ocean, multiplayer, Storm Run mini-game, watch, screens,
+   captain's log, follow, download.
    One committed night-at-sea look (single theme by choice). */
 :root{
   --ink:#0a1417;          /* night sea, page ground */
@@ -231,6 +232,42 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   .reel{scroll-snap-align:start}
 }
 
+/* storm run mini-game: copy on the left, the board on the right */
+.play{background:radial-gradient(ellipse at 70% 40%,color-mix(in srgb,var(--tide) 70%,transparent),transparent 65%)}
+.play-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,480px);gap:clamp(32px,6vw,80px);align-items:center}
+.play .sec-head{margin-bottom:0}
+.sr-legend{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:12px}
+.sr-legend li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:14px;align-items:center;color:var(--parch)}
+.sr-legend li span{color:var(--parch-dim)}
+.sr-legend .ico{display:block;width:52px;height:44px;background:center/contain no-repeat}
+.sr-legend .ico.kr{background:url("assets/game/kraken.webp") 0 0/1400% 100% no-repeat}
+.sr-legend b{color:var(--gold-hi);font-weight:700}
+.sr{position:relative;width:100%;max-width:480px;justify-self:center}
+.sr-board{position:relative;border-radius:18px;overflow:hidden;box-shadow:0 0 0 1px rgba(246,207,122,.3),0 30px 70px rgba(0,0,0,.6),0 0 90px rgba(44,138,138,.18);background:#0b2c38}
+.sr canvas{display:block;width:100%;aspect-ratio:3/4;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;cursor:crosshair}
+.sr canvas:focus{outline:none}
+.sr canvas:focus-visible{outline:2px solid var(--gold-hi);outline-offset:-4px}
+.sr-panel{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:14px;padding:28px;text-align:center;background:radial-gradient(ellipse at center,rgba(6,14,16,.72),rgba(6,14,16,.9))}
+.sr-panel[hidden]{display:none}
+.sr-panel h3{font-size:clamp(2.4rem,7vw,3.4rem);color:var(--gold-hi);text-shadow:0 2px 0 #5b3a10}
+.sr-panel p{color:var(--parch);max-width:24em;font-size:1.02rem}
+.sr-panel .how{color:var(--parch-dim);font-size:.95rem}
+.sr-score{display:grid;gap:2px}
+.sr-score small{font-size:.75rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--parch-dim)}
+.sr-score b{font-family:var(--f-display);font-weight:400;font-size:4rem;line-height:1;color:var(--gold-hi)}
+.sr-score span{color:var(--gold);font-weight:700}
+.sr-go{min-height:60px;min-width:200px;padding:12px 30px;border:0;border-radius:12px;cursor:pointer;font-family:var(--f-display);font-size:1.8rem;line-height:1;color:var(--paper-ink);background:linear-gradient(180deg,var(--gold-hi),var(--gold));box-shadow:0 2px 0 #8a5a14,0 10px 30px rgba(224,173,74,.3);transition:transform .15s ease}
+.sr-go:hover{transform:translateY(-2px)}
+.sr-go.ghost{background:transparent;color:var(--gold-hi);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--gold) 60%,transparent);font-size:1.4rem;min-height:52px;min-width:0}
+.sr-end .btn-play{margin-top:4px}
+.sr-ctl{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;color:var(--parch-dim);font-size:.92rem}
+.sr-ctl button{min-height:44px;padding:8px 16px;border-radius:999px;border:1px solid color-mix(in srgb,var(--gold) 45%,transparent);background:var(--ink);color:var(--gold-hi);font:inherit;font-weight:700;cursor:pointer}
+.sr-ctl button[aria-pressed="false"]{color:var(--parch-dim);border-color:var(--tide)}
+@media (max-width:900px){.play-grid{grid-template-columns:minmax(0,1fr)}.sr-legend{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.sr-legend li{grid-template-columns:40px minmax(0,1fr);gap:10px;font-size:.95rem}.sr-legend .ico{width:40px;height:34px}.sr-panel{padding:16px 14px;gap:8px}.sr-panel h3{font-size:2.2rem}.sr-panel p{font-size:.95rem;line-height:1.4}.sr-score b{font-size:3rem}.sr-go{min-height:56px;font-size:1.6rem}.sr-go.ghost{min-height:48px;font-size:1.3rem}}
+.hero .try{display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--gold-hi);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--gold) 50%,transparent);padding-bottom:2px;justify-self:start;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.hero .try:hover{border-color:var(--gold-hi)}
+
 /* scroll reveal, only when the script is running */
 .js .reveal{opacity:.15;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
 .js .reveal.in{opacity:1;transform:none}
@@ -314,6 +351,7 @@ footer .fine{flex-basis:100%;font-size:.8rem;opacity:.75}
     <nav class="nav" aria-label="Sections">
       <a href="#game">The game</a>
       <a href="#multiplayer">Multiplayer</a>
+      <a href="#play">Mini-game</a>
       <a href="#watch">Watch</a>
       <a href="#screens">Screenshots</a>
       <a href="#log">Updates</a>
@@ -351,6 +389,7 @@ footer .fine{flex-basis:100%;font-size:.8rem;opacity:.75}
           <span><small>Windows PC</small><b>Coming soon</b></span>
         </span>
       </div>
+      <a class="try" href="#play">Or try a 45-second voyage right here in your browser <span aria-hidden="true">&rarr;</span></a>
     </div>
     <div class="phone">
       <video data-auto autoplay muted loop playsinline preload="auto" poster="assets/video/hero-loop.jpg" aria-label="Gameplay: sailing through a storm, a night crossing by lantern light and snowy northern waters">
@@ -500,6 +539,48 @@ footer .fine{flex-basis:100%;font-size:.8rem;opacity:.75}
         <h3>Pirate lords and events</h3>
         <p>The Kraken King and Storm Empress Nyx rule the far waters. Horizon events bring the Nyx Kraken hunt and whaling grounds you fish with other captains.</p>
       </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec play" id="play">
+  <div class="wrap play-grid">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Play now, right here</span>
+      <h2>Storm Run</h2>
+      <p>A squall is rolling in and your sloop is 45 seconds from port. Steer through the storm, scoop up supplies and keep your hull in one piece.</p>
+      <ul class="sr-legend">
+        <li><span class="ico" style="background-image:url('assets/game/crate.webp')"></span><div><b>+10</b> <span>supply crate</span></div></li>
+        <li><span class="ico" style="background-image:url('assets/game/barrel.webp')"></span><div><b>+15</b> <span>barrel of goods</span></div></li>
+        <li><span class="ico" style="background-image:url('assets/game/chest.webp')"></span><div><b>+50</b> <span>treasure chest</span></div></li>
+        <li><span class="ico" style="background-image:url('assets/game/rock1.webp')"></span><div><b>Avoid</b> <span>rocks cost a hull plank</span></div></li>
+        <li><span class="ico kr"></span><div><b>Avoid</b> <span>the Kraken rises after a while</span></div></li>
+      </ul>
+    </div>
+    <div id="storm-run" class="sr reveal" data-assets="assets/game/">
+      <div class="sr-board">
+        <canvas tabindex="0" width="480" height="640" aria-label="Storm Run mini-game. Steer left and right with the arrow keys or by dragging."></canvas>
+        <div class="sr-panel sr-start">
+          <h3>Storm Run</h3>
+          <p>Reach port before the storm takes you. Every supply you grab counts, every plank left at the end is a bonus.</p>
+          <p class="how">Drag anywhere on the sea to steer. On a computer, move the mouse or use the arrow keys.</p>
+          <button class="sr-go" type="button" data-sr="start">Set sail</button>
+        </div>
+        <div class="sr-panel sr-end" hidden aria-live="polite">
+          <h3 data-sr="title">Land ho!</h3>
+          <div class="sr-score"><small>Supplies</small><b data-sr="score">0</b><span data-sr="best"></span></div>
+          <p data-sr="msg"></p>
+          <a class="btn-play" href="https://play.google.com/store/apps/details?id=com.partybeastgames.curseofscullyy" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#34a853" d="M3.6 1.8 13.4 12l-9.8 10.2c-.4-.2-.6-.6-.6-1.1V2.9c0-.5.2-.9.6-1.1z"/><path fill="#fbbc04" d="m16.8 8.6 3.4 2c.9.5.9 1.8 0 2.3l-3.4 2L13.4 12z"/><path fill="#4285f4" d="M3.6 1.8c.3-.2.8-.2 1.2 0l12 6.8-3.4 3.4z"/><path fill="#ea4335" d="m13.4 12 3.4 3.4-12 6.8c-.4.2-.9.2-1.2 0z"/></svg>
+            <span><small>Play the full game free on</small><b>Google Play</b></span>
+          </a>
+          <button class="sr-go ghost" type="button" data-sr="start">Sail again</button>
+        </div>
+      </div>
+      <div class="sr-ctl">
+        <span>45 seconds &middot; 3 hull planks</span>
+        <button type="button" data-sr="sound" aria-pressed="true">Sound on</button>
+      </div>
     </div>
   </div>
 </section>
@@ -759,5 +840,6 @@ document.documentElement.classList.remove('no-js');document.documentElement.clas
   }
 })();
 </script>
+<script src="assets/game/storm-run.js" defer></script>
 </body>
 </html>

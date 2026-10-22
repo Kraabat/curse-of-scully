@@ -12,6 +12,7 @@ This repo only holds the static website (plain HTML, CSS and JavaScript, no buil
 - `assets/` – images (webp), gameplay videos (mp4 + webm), icons
 - `assets/gh/` – Grand Horizon art
 - `assets/video/` – gameplay clips cut from the YouTube Shorts
+- `assets/game/` – Storm Run, the 45-second browser mini-game (`storm-run.js` plus sprites from the game's own art). Tuning numbers (length, speed, spawn rates, points) sit near the top and in `spawnObstacle`/`spawnPickup`; the best score is kept in the visitor's browser only.
 
 ## Updating
 
